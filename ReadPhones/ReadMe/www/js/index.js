@@ -46,6 +46,5 @@ var app = {
 
         console.log('Received Event: ' + id);
 		
-		alert("omfg alex sucks like 75 dicks");
     }
 };
