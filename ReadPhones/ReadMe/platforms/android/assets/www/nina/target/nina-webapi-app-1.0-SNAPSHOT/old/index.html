@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>HTTP APP Sample</title>
+
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script src="js/tools.js"></script>
+    <script src="js/credentials.js"></script>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+</head>
+
+<body style="padding-top: 70px;">
+
+<!-- Fixed navbar -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="navbar-brand navbar-left">
+                <button id="connection_button" class="btn btn-primary btn-sm" style="margin-top: -4px;" onclick="setConnection();">Connect</button>
+            </div>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul id="main-menu" class="nav navbar-nav hidden">
+                <li><a href="#dictation" data-toggle="tab">Dictation</a></li>
+                <li><a href="#tts" data-toggle="tab">TTS</a></li>
+                <li><a href="#nlu" data-toggle="tab">NLU</a></li>
+                <li><a href="#nle" data-toggle="tab">NLE</a></li>
+                <li><a href="#dialog" data-toggle="tab">Dialog</a></li>
+                <li><a href="#varolii" data-toggle="tab">Varolii</a></li>
+                <li><a href="#vp" data-toggle="tab">Vocal Password</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="settings" href="#">Settings</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script>
+    $(document).on('click', '#navbar ul li a', function(e) {
+        resetStates();
+    });
+    $(function () {
+        Alert.init({
+            "selector": ".bb-alert"
+        });
+    });
+    $(document).on("click", ".settings", function(e) {
+        $.get('settings.html', function(data) {
+            bootbox.dialog({
+                message: data,
+                title: "Settings",
+                buttons: {
+                    success: {
+                        label: "Save",
+                        className: "btn-success",
+                        callback: function() {
+                            saveCredentials();
+                        }
+                    },
+                    danger: {
+                        label: "Reset",
+                        className: "btn-danger",
+                        callback: function() {
+                            resetCredentials();
+                        }
+                    }
+                }
+            });
+            enterCredentials();
+        });
+    });
+
+    $(document).ready(function () {
+        $(document).keypress(function (e) {
+            var key = e.which;
+            if (key == 13) {
+                if (!$("#request_nle_button").hasClass("disabled")) {
+                    requestNLE();
+                }
+                if (!$("#request_dialog_button").hasClass("disabled")) {
+                    requestDIALOG();
+                }
+                if (!$("#request_nlu_button").hasClass("disabled")) {
+                    requestNLU();
+                }
+                return false;
+            }
+        });
+    });
+</script>
+
+<div class="bb-alert alert alert-success" style="display:none; position: absolute; right: 0px; z-index:1;">
+    <span></span>
+</div>
+
+
+<div class="container">
+    <!-- Main component for a primary marketing message or call to action -->
+    <div id="main-view" class="tab-content hidden">
+        <div class="jumbotron tab-pane" id="dictation">
+            <button id="record_button" class="btn btn-primary btn-lg" onclick="startRecording();">Record</button>
+            <button id="stop_button" class="btn btn-danger btn-lg disabled" onclick="stopRecording();">Stop</button>
+            <div id="recording"></div>
+            <textarea id="dictation_results">Press the record button to start dictation</textarea>
+        </div>
+        <div class="jumbotron tab-pane" id="tts">
+            Voice:
+            <select id="voice_selected">
+                <option value="Carol">Carol</option>
+                <option value="Samantha">Samantha</option>
+            </select>
+            <a href="#" id="tts_expert_mode_button" class="expert_mode_button" onclick="ttsExpertMode();">Expert Mode</a>
+            <br><br>
+            <textarea id="tts_to_send" onkeyup="textChanged('tts_to_send', 'request_tts_button');" onchange="textChanged('tts_to_send', 'request_tts_button');"></textarea>
+            <br><br>
+            <button id="request_tts_button" class="btn btn-primary btn-lg disabled" onclick="requestTTS();">
+                Request TTS
+            </button>
+        </div>
+        <div class="jumbotron tab-pane" id="nlu">
+            <a href="#" id="nlu_expert_mode_button" class="expert_mode_button" onclick="nluExpertMode();">Expert Mode</a>
+            <br><br>
+            <textarea id="nlu_text_to_send" onkeyup="textChanged('nlu_text_to_send', 'request_nlu_button');" onchange="textChanged('nlu_text_to_send', 'request_nlu_button');"></textarea>
+            <br><br>
+            <button id="request_nlu_button" class="btn btn-primary btn-lg disabled" onclick="requestNLU();">Request NLU
+            </button>
+        </div>
+        <div class="jumbotron tab-pane" id="nle">
+            <a href="#" id="nle_expert_mode_button" class="expert_mode_button" onclick="nleExpertMode();">Expert Mode</a>
+            <br><br>
+            <textarea id="nle_text_to_send" onkeyup="textChanged('nle_text_to_send', 'request_nle_button');" onchange="textChanged('nle_text_to_send', 'request_nle_button');"></textarea>
+            <br><br>
+            <button id="request_nle_button" class="btn btn-primary btn-lg disabled"
+                    onclick="requestNLE();">Request NLE
+            </button>
+        </div>
+        <div class="jumbotron tab-pane" id="dialog">
+            <div id="logo" style="border-radius: 65px; height: 50px; width: 50px; background-color: black;"> <img onclick="record();" align="center" height="50" width="50" src="images/ninalogo.svg"> </div>
+            <a href="#" id="expert_mode_button" class="expert_mode_button" onclick="expertMode();">Expert Mode</a>
+            <br><br>
+            <textarea id="text_to_send" onkeyup="textChanged('text_to_send', 'request_dialog_button');" onchange="textChanged('text_to_send', 'request_dialog_button');"></textarea>
+            <br><br>
+            <button id="request_dialog_button" class="btn btn-primary btn-lg disabled" onclick="requestDIALOG();">Request DIALOG</button>
+            <button id="save_dialog_button" class="btn btn-primary btn-lg disabled" onclick="saveDIALOG();">Save DIALOG</button>
+            <button id="load_dialog_button" class="btn btn-primary btn-lg disabled" onclick="loadDIALOG();">Load DIALOG</button>
+
+            <div  id="results" style="overflow:scroll; height:400px;">
+            </div>
+
+        </div>
+        <div class="jumbotron tab-pane" id="varolii">
+            <div>
+                <select id="clientId">
+                    <option value="1">Client 1</option>
+                    <option value="2">Client 2</option>
+                    <option value="3">Client 3</option>
+                    <option value="4">Client 4</option>
+                </select>
+            </div>
+            <div style="margin-top: 10px;">
+                <ul id="varolii-menu" class="nav nav-pills">
+                    <li class="active"><a href="#getTab" data-toggle="tab">Get</a></li>
+                    <li><a href="#putTab" data-toggle="tab">Put</a></li>
+                    <li><a href="#removeTab" data-toggle="tab">Remove</a></li>
+                    <li><a href="#putInfoTab" data-toggle="tab">Put Info</a></li>
+                    <li><a href="#getInfoTab" data-toggle="tab">Get Info</a></li>
+                </ul>
+            </div>
+
+            <div id='content' class="tab-content">
+                <div id="getTab" class="tab-pane active">
+                    <h2>Get Person</h2>
+                    <div class="row" style="margin: 8px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" for="personId_input">Person ID to get</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="personId_input">
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-success" onclick="requestVarolii()">Get</button>
+                        </div>
+                    </div>
+                    <div id="get"></div>
+                </div>
+                <div id="putTab" class="tab-pane">
+                    <h2>Put Person</h2>
+                    <div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="firstName_input">First Name</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="firstName_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="firstName_input">Last Name</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="lastName_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="street_input">Street</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="street_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="city_input">City</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="city_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="state_input">State</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="state_input" maxlength="2" size="2">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="zip_input">Zip</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="zip_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="country_input">Country</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="country_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="phone_input">Phone</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="phone_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="account_input">Account</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="account_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <button class="btn btn-success" onclick="requestVarolii()">Put</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="put"></div>
+                </div>
+                <div id="removeTab" class="tab-pane">
+                    <h2>Remove Person</h2>
+                    <div class="row" style="margin: 8px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" for="personIdRemove_input">Person ID to remove</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="personIdRemove_input">
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-danger" onclick="requestVarolii()">Remove</button>
+                        </div>
+                    </div>
+                    <div id="remove"></div>
+                </div>
+                <div id="putInfoTab" class="tab-pane">
+                    <h2>Put Info</h2>
+                    <div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="personIdInfo_input">Person ID to put info</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="personIdInfo_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="dataId_input">Data Id</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="dataId_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="nmaid_id_input">NMAID ID</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="nmaid_id_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="nmaid_key_input">NMAID Key</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <textarea type="text" class="form-control" id="nmaid_key_input" rows="8" cols="40"></textarea>
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="companyName_input">Company Name</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="companyName_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <label class="control-label" for="appName_input">App Name</label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="appName_input">
+                            </div>
+                        </div>
+                        <div class="row" style="margin: 8px;">
+                            <div class="col-sm-2">
+                                <button class="btn btn-success" onclick="requestVarolii()">Put</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="putInfo"></div>
+                </div>
+                <div id="getInfoTab" class="tab-pane">
+                    <h2>Get Info</h2>
+                    <div class="row" style="margin: 8px;">
+                        <div class="col-sm-3">
+                            <label class="control-label" for="infoId_input">Person ID to get info</label>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="infoId_input">
+                        </div>
+                        <div class="col-sm-3">
+                            <button class="btn btn-success" onclick="requestVarolii()">Get</button>
+                        </div>
+                    </div>
+                    <div id="getInfo"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="jumbotron tab-pane" id="vp">
+            <div style="margin-top: 10px;">
+                <button id="vpSession" class="btn btn-primary" onclick="vpSession()">Start Session</button>
+                <button id="vpIsTrained" class="btn btn-primary disabled" onclick="vpIsTrained()">Is Trained?</button>
+                <button id="vpEnroll" class="btn btn-primary disabled" onclick="vpEnroll()">Enroll</button>
+                <button id="vpVerify" class="btn btn-primary disabled" onclick="vpVerify()">Verify</button>
+            </div>
+            <div id="vpRecordInfo">
+                <div id="vpRecord" style="border-radius: 65px; height: 50px; width: 50px; background-color: black; margin: 10px;">
+                    <img onclick="vpRecord();" align="center" height="50" width="50" src="images/ninalogo.svg">
+                </div>
+                <span>Tap the microphone button and speak "my voice is my password". When done, tap the microphone button again to send the recording.</span>
+            </div>
+        </div>
+
+    </div>
+    <div id="log_container">
+        <button id="clear" class="btn btn-default" onclick="clearLog();" style="position: absolute; right: 0px;">Clear</button>
+        <pre id="log"></pre>
+    </div>
+</div>
+
+<script src="js/alert.js"></script>
+<script src="js/bootbox.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
+<script src="js/audioHandlers.js"></script>
+<script src="js/globals.js"></script>
+<script src='js/resampler.js'></script>
+<script src="js/recorderjs/recorder.js"></script>
+
+<script src="js/socket.js"></script>
+<script src="js/nina-connection.js"></script>
+<script src="js/nina-session.js"></script>
+<script src="js/q.js"></script>
+
+<script src="js/connection.js"></script>
+<script src="js/dictation.js"></script>
+<script src="js/tts.js"></script>
+<script src="js/nlu.js"></script>
+<script src="js/nle.js"></script>
+<script src="js/dialog.js"></script>
+<script src="js/varolii.js"></script>
+<script src="js/vocalpassword.js"></script>
+
+</body>
+</html>
