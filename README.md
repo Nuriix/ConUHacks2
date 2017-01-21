@@ -13,4 +13,4 @@ Link to API:
 - Facebook: https://developers.facebook.com/docs/javascript/reference/FB.api
 - Twitter: https://dev.twitter.com/rest/public
 - Reddit: https://www.reddit.com/dev/api/
-
+- Android: https://developer.android.com/guide/index.html
