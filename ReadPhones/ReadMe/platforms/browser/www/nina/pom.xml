@@ -1,0 +1,182 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.nuance</groupId>
+    <artifactId>nina-webapi-app-websocket</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>Nina WebAPI APP</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <slf4j.version>1.7.6</slf4j.version>
+        <logback.version>1.1.2</logback.version>
+    </properties>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.2</version>
+                <configuration>
+                    <compilerVersion>1.7</compilerVersion>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <path>/nina-WebSocket-app</path>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.3.0.M1</version>
+                <configuration>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webApp>
+                        <contextPath>/nina-WebSocket-app</contextPath>
+                    </webApp>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-api</artifactId>
+            <scope>provided</scope>
+            <version>1.1</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.5.7.Final</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nuance.nmsp</groupId>
+            <artifactId>core</artifactId>
+            <version>5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nuance.nmsp</groupId>
+            <artifactId>dictationresult</artifactId>
+            <version>5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nuance.nmsp</groupId>
+            <artifactId>oem</artifactId>
+            <version>5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nuance.nmsp</groupId>
+            <artifactId>resource-common</artifactId>
+            <version>5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nuance.nmsp</groupId>
+            <artifactId>resource-nmas</artifactId>
+            <version>5.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.nuance.mmf</groupId>
+            <artifactId>mmf-utils</artifactId>
+            <version>2.4.2-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.dropwizard</groupId>
+            <artifactId>dropwizard-metrics</artifactId>
+            <version>0.7.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.james</groupId>
+            <artifactId>apache-mime4j-core</artifactId>
+            <version>0.7.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20140107</version>
+        </dependency>
+
+    </dependencies>
+
+        <repositories>
+                <repository>
+                        <id>local-maven-repo</id>
+                        <url>file:///${project.basedir}/src/main/resources/local-maven-repo</url>
+                </repository>
+                <repository>
+                        <snapshots>
+                           <enabled>true</enabled>
+                                           <updatePolicy>interval:90</updatePolicy>
+                                           <checksumPolicy>warn</checksumPolicy>
+                        </snapshots>
+                        <releases>
+                           <enabled>true</enabled>
+                        </releases>
+                        <id>mobi-artifactory</id>
+                        <url>http://mobi-artifactory:8081/artifactory/repo</url>
+                </repository>
+        </repositories>
+
+</project>
