@@ -10,7 +10,7 @@ Main Goal:
 Link to APIs:
 
 - Nuance: https://developer.nuance.com/public/index.php?task=home
-          https://webapi-intern.nuance.mobi/nuance-conuhacks/ <-- Good one
+          https://webapi-intern.nuance.mobi/nuance-conuhacks/
 - Facebook: https://developers.facebook.com/docs/javascript/reference/FB.api
 - Twitter: https://dev.twitter.com/rest/public
 - Reddit: https://www.reddit.com/dev/api/
