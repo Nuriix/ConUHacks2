@@ -45,6 +45,15 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
-		
+
     }
 };
+    function redirectSPS(){
+        var url = "SPS.html"
+        window.location(url);
+    }
+
+    function redirectIndex(){
+        var url = "index.html"
+        window.location(url);
+    }

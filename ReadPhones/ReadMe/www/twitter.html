@@ -49,7 +49,18 @@
 </head>
 
 <body>
+    <script>
+        $(document).ready(function() {
+          loadLatestTweet();
+        });
 
+        function loadLatestTweet(){
+          var _url = 'https://api.twitter.com/1/statuses/user_timeline/CypressNorth.json?callback=?&count=1';
+          $.getJSON(_url,function(data){
+              //data is holding a JSON object
+          });
+        }
+    </script>
     <div class="app">
 
         <div data-role="page" id="pageone">
@@ -59,14 +70,13 @@
             </div>
 
             <div data-role="main" class="ui-content">
-                <h2>Read my feeds from :</h2><br>
-                <div data-role="controlgroup">
-                    <button id="facebook" class="ui-btn">Facebook</button> <br>
-                    <button id="twitter" class="ui-btn">Twitter</button> <br>
-                    <button id="reddit" class="ui-btn">Reddit</button> <br>
-                </div>
+              <h2>Twitter<h2>
 
+                <div data-role="controlgroup">
+                </div>
             </div>
+
+
 
             <div data-role="footer">
               <div data-role="navbar" ></div>
