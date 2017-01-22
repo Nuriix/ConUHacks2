@@ -26,7 +26,7 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
+        document.addEventListener('deviceready', this.onDeviceReady, loadworddoc, false);
     },
     // deviceready Event Handler
     //
@@ -57,4 +57,29 @@ var app = {
         var url = "index.html"
         window.location(url);
     }
+   // document.addEventListener("deviceready", loadworddoc, false);
+ function loadworddoc(){
 
+
+window.resolveLocalFileSystemURL(cordova.file.*, gotFile, fail);
+
+function fail(e) {
+console.log("FileSystem Error");
+console.dir(e);
+}
+
+function gotFile(fileEntry) {
+
+fileEntry.file(function(file) {
+var reader = new FileReader();
+
+reader.onloadend = function(e) {
+console.log("Text is: "+this.result);
+document.querySelector("#textArea").innerHTML = this.result;
+}
+
+reader.readAsText(file);
+});
+
+}
+}
