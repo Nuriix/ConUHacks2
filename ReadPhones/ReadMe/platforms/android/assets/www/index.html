@@ -66,6 +66,54 @@
                     <button id="twitter" class="ui-btn">Twitter</button> <br>
                     <button id="reddit" class="ui-btn">Reddit</button> <br> -->
                 </div>
+                <script type="text/javascript">
+                 function loadworddoc(){
+
+        // creates the word object
+
+        var doc = new ActiveXObject("Word.Application");
+        var shell = new ActiveXObject('WScript.Shell');
+
+
+        // doesn't display Word window
+
+        doc.Visible=false; 
+
+        // specify path to document
+
+        doc.Documents.Open(document.all.hello.value); 
+        var document = doc.ActiveDocument;
+
+    for (var i = 1; i <= document.Paragraphs.Count; i++) {
+    var Text = document.Paragraphs(i).Range.Text;
+    }
+
+       //document.all.myarea.value = txt;
+
+       document.all.tbContentElement.DOM.body.innerHTML = Text;
+
+       // quit word (very important or you'll quickly chew up memory!)
+
+       doc.quit(0); 
+
+     }
+
+       //-->
+
+       </script>
+                    <p><input type=button onClick="loadworddoc();" value="Load">
+
+           <p><input type=file name=hello>
+
+           <p><textarea name=myarea cols=50 rows=5>nothing here yet</textarea>
+
+           <object ID="tbContentElement" CLASS="tbContentElement" 
+
+             CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" VIEWASTEXT
+
+             width="450" height="300">
+
+             <param name=Scrollbars value=true></object>
 
             </div>
 

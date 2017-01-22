@@ -57,3 +57,4 @@ var app = {
         var url = "index.html"
         window.location(url);
     }
+
