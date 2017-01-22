@@ -26,7 +26,7 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, loadworddoc, false);
+        document.addEventListener('deviceready', this.onDeviceReady, false);
     },
     // deviceready Event Handler
     //
@@ -61,7 +61,7 @@ var app = {
  function loadworddoc(){
 
 
-window.resolveLocalFileSystemURL(cordova.file.*, gotFile, fail);
+window.resolveLocalFileSystemURL("cordova.file.*", gotFile, fail);
 
 function fail(e) {
 console.log("FileSystem Error");
