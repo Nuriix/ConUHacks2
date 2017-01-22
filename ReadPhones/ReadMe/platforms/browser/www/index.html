@@ -58,71 +58,66 @@
                 <p>The App that will read for you!</p>
             </div>
 
-            <div data-role="main" class="ui-content">
+            <div data-role="main" class="ui-content" >
                 <h2>Read my document from :</h2><br>
-                <div data-role="controlgroup">
-                    <button id="filetoread" class="ui-btn">Select File</button> <br>
+
+                  <!--  <input type="button" id="filetoread" class="ui-btn" value="Select File"  /> <br>-->
                     <!--
                     <button id="twitter" class="ui-btn">Twitter</button> <br>
                     <button id="reddit" class="ui-btn">Reddit</button> <br> -->
-                </div>
+
                 <script type="text/javascript">
-                 function loadworddoc(){
+                   function loadworddoc(){
 
-        // creates the word object
+                    // creates the word object
 
-        var doc = new ActiveXObject("Word.Application");
-        var shell = new ActiveXObject('WScript.Shell');
+                    var doc = new ActiveXObject("Word.Application");
+                    var shell = new ActiveXObject('WScript.Shell');
 
+                    // doesn't display Word window
 
-        // doesn't display Word window
+                    doc.Visible=false;
 
-        doc.Visible=false; 
+                    // specify path to document
 
-        // specify path to document
+                    doc.Documents.Open(document.all.hello.value);
+                    var document = doc.ActiveDocument;
 
-        doc.Documents.Open(document.all.hello.value); 
-        var document = doc.ActiveDocument;
+                    for (var i = 1; i <= document.Paragraphs.Count; i++) {
+                    var Text = document.Paragraphs(i).Range.Text;
+                    }
 
-    for (var i = 1; i <= document.Paragraphs.Count; i++) {
-    var Text = document.Paragraphs(i).Range.Text;
-    }
+                   //document.all.myarea.value = txt;
+                   document.all.tbContentElement.DOM.body.innerHTML = Text;
+                   // quit word (very important or you'll quickly chew up memory!)
 
-       //document.all.myarea.value = txt;
+                   doc.quit(0);
+              }
+             //-->
+            </script>
 
-       document.all.tbContentElement.DOM.body.innerHTML = Text;
+            <input type=file name=hello id="thefile"/>
 
-       // quit word (very important or you'll quickly chew up memory!)
+            <p><input type=button onClick="loadworddoc();" value="Load" data-role="none" class="ui-btn"/></p>
+            <br>
+            <textarea name=myarea cols=50 rows="10">nothing here yet</textarea>
 
-       doc.quit(0); 
+            <object ID="tbContentElement" CLASS="tbContentElement"
 
-     }
+               CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" VIEWASTEXT
 
-       //-->
+               width="450" height="300">
 
-       </script>
-                    <p><input type=button onClick="loadworddoc();" value="Load">
+               <param name=Scrollbars value=true>
+             </object>
+          </div>
 
-           <p><input type=file name=hello>
-
-           <p><textarea name=myarea cols=50 rows=5>nothing here yet</textarea>
-
-           <object ID="tbContentElement" CLASS="tbContentElement" 
-
-             CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" VIEWASTEXT
-
-             width="450" height="300">
-
-             <param name=Scrollbars value=true></object>
-
-            </div>
-
-            <div data-role="footer">
-              <div data-role="navbar" ></div>
-              <br>
-              <p>Made By Team Better Than Tunnel Snakes</p>
-              <p>ConUHacks II 2017</p>
-            </div>
+          <div data-role="footer">
+            <div data-role="navbar" ></div>
+            <br>
+            <p>Made By Team Better Than Tunnel Snakes</p>
+            <p>ConUHacks II 2017</p>
+          </div>
 
         </div>
     </div>
