@@ -61,7 +61,7 @@ var app = {
  function loadworddoc(fileLocation){
 
 
-window.resolveLocalFileSystemURL("cordova.file.*", gotFile, fail);
+window.resolveLocalFileSystemURL(fileLocation, gotFile, fail);
 
 function fail(e) {
 console.log("FileSystem Error");
