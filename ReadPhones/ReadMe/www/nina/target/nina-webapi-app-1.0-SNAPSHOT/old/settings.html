@@ -1,0 +1,130 @@
+<div>
+    <ul class="nav nav-pills">
+        <li class="active"><a data-toggle="tab" href="#application">Application</a></li>
+        <li><a data-toggle="tab" href="#endpointing">Endpointing</a></li>
+        <li><a data-toggle="tab" href="#personal">Personal</a></li>
+        <li><a data-toggle="tab" href="#ninaweb">NiW</a></li>
+        <li><a data-toggle="tab" href="#nmsp">NMSP</a></li>
+        <li><a data-toggle="tab" href="#persistence">Varolii</a></li>
+        <li><a data-toggle="tab" href="#vp2">VP</a></li>
+    </ul>
+</div>
+
+<div class="tab-content" id="content">
+
+    <div class="tab-pane active" id="application">
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="app-name">App Name</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="app-name" placeholder="Enter Application Name" type="text">
+            </div>
+        </div>
+
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="company-name">Company Name</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="company-name" placeholder="Enter Company Name" type="text">
+            </div>
+        </div>
+
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="app-version">App Version</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="app-version" placeholder="Enter Application Version" type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane" id="endpointing">
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="background-noise-frames">Background Noise Frames</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="background-noise-frames" placeholder="Enter Background Noise Frames" type="text">
+            </div>
+        </div>
+
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="start-of-speech-frames">Start of Speech Frames</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="start-of-speech-frames" placeholder="Enter Start of Speech Frames" type="text">
+            </div>
+        </div>
+
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="end-of-speech-frames">End Of Speech Frames</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="end-of-speech-frames" placeholder="Enter End Of Speech Frames" type="text">
+            </div>
+        </div>
+
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="energy-delta-ratio-threshold">Energy Delta Ratio Threshold</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="energy-delta-ratio-threshold" placeholder="Enter Energy Delta Ratio Threshold" type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane" id="personal">
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="nmaid-id">NMAID_ID</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="nmaid-id" placeholder="Enter NMAID_ID" type="text">
+            </div>
+        </div>
+
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="nmaid-key">NMAID_KEY</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="nmaid-key" placeholder="Enter NMAID_KEY" type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane" id="ninaweb">
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="ninaweb-url">NinaWeb URL</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="ninaweb-url" placeholder="Enter NinaWeb URL" type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane" id="nmsp">
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="nmspGateway">NMSP Gateway</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="nmspGateway" placeholder="Enter NMSP Gateway" type="text">
+            </div>
+        </div>
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="cloudName">Cloud Name</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="cloudName" placeholder="Enter Cloud Name" type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane" id="persistence">
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="personID">Person ID</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="personID" placeholder="Enter Person ID" type="text">
+            </div>
+            <div class="col-sm-6">
+                <button type="button" class="btn" onclick="loadVarolli()">Load</button>
+                <button type="button" class="btn" onclick="saveVarolli()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane" id="vp2">
+        <div class="row" style="margin: 8px;">
+            <label class="control-label col-sm-4" for="speakerID">Speaker ID</label>
+            <div class="col-sm-6">
+                <input class="form-control" id="speakerID" placeholder="Enter Speaker ID" type="text">
+            </div>
+        </div>
+    </div>
+
+</div>

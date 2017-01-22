@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Nina WebSocket APP Sample</title>  
+
+        <link rel="icon" href="#" />
+
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.tagit.css" />
+        <link rel="stylesheet" type="text/css" href="css/tagit.ui-zendesk.css" />
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-switch.min.css" />
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.0.js"></script>
+        <script type="text/javascript" src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/audio/audio_handlers.js"></script>
+        <script type="text/javascript" src="js/audio/resampler.js"></script>
+        <script type="text/javascript" src="js/utils/tagit/tag-it.min.js" charset="utf-8"></script>
+        <script type="text/javascript" src="js/utils/promises/q.js"></script>
+        <script type="text/javascript" src="js/utils/data_utils.js"></script>
+        <script type="text/javascript" src="js/utils/string_utils.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/ui.js"></script>
+        <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="js/utils/bootstrap-switch/bootstrap-switch.min.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                // Upload Dynamic Vocabulary: make the text input box 'tagable'
+                $("#upload_dv_textArray_data").tagit({
+                    removeConfirmation: true,
+                    placeholderText: "...",
+                    allowSpaces: true
+                });
+                // remove the jquery UI search messages (each time I type in the tag input box).
+                $(".ui-helper-hidden-accessible")[0].setAttribute("style", "display:none;");
+
+                // PlayAudio: make the barge-in checkbox a switch box.
+                $('#barge-in').bootstrapSwitch();
+                // SpeechReco: make the from-file checkbox a switch box.
+                $('#sr_formURL').bootstrapSwitch();
+                $('#nlu_nr_sr_formURL').bootstrapSwitch();
+                $('#nlu_nle_sr_formURL').bootstrapSwitch();
+                $('#dialog_niw_sr_formURL').bootstrapSwitch();
+                $('#dialog_nce_sr_formURL').bootstrapSwitch();
+            });
+        </script>
+    </head>
+
+    <body>
+
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav" id="navbar_commands" onclick="setOnlyActive('navbar_commands')">
+                        <li class="active"><a href="#Welcome" data-toggle="tab" class="navbar-brand">Nina WebSocket APP</a></li>
+                        <li><a href="#StartEndSession" data-toggle="tab"><span class="glyphicon glyphicon-off"></span> Start/End session</a></li>
+                        <li class="secondaryTab"><a href="#PlayAudio" data-toggle="tab"><span class="glyphicon glyphicon-play"></span> Play audio</a></li>
+                        <li class="secondaryTab dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-equalizer"></span> Speech recognition</a>
+                            <ul class='dropdown-menu'>
+                                <li class="secondaryTab"><a href="#SpeechRecognition" data-toggle="tab">Nina</a></li>
+                                <li class="secondaryTab"><a href="#Config" data-toggle="tab">Config</a></li>
+                            </ul>
+                        </li>
+                        <li class="secondaryTab dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-filter"></span> NLU</a>
+                            <ul class='dropdown-menu'>
+                                <li class="secondaryTab"><a href="#NR" data-toggle="tab">NR</a></li>
+                                <li class="secondaryTab"><a href="#NLE" data-toggle="tab">NLE</a></li>
+                            </ul>
+                        </li>
+                        <!--<li class="secondaryTab dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-comment"></span> Dialog</a>-->
+                            <!--<ul class='dropdown-menu'>-->
+                                <!--<li class="secondaryTab"><a href="#NiW" data-toggle="tab">NiW</a></li>-->
+                                <!--<li class="secondaryTab"><a href="#NCE" data-toggle="tab">NCE</a></li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
+                        <li class="secondaryTab"><a href="#VocalPassword" data-toggle="tab"><span class="glyphicon glyphicon-lock"></span> Vocal password</a></li>
+                        <!--<li class="secondaryTab dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-briefcase"></span> BLE</a>-->
+                            <!--<ul class='dropdown-menu'>-->
+                                <!--<li class="secondaryTab"><a href="#KQTest" data-toggle="tab">Test KQServer</a></li>-->
+                                <!--<li class="secondaryTab"><a href="#KQUpload" data-toggle="tab">Upload Pkg</a></li>-->
+                                <!--<li class="secondaryTab"><a href="#KQStatus" data-toggle="tab">Get Status</a></li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right" id="navbar_settings" onclick="setOnlyActive('navbar_settings')">
+                        <li class="secondaryTab"><a href="#Logs" data-toggle="tab"><span class="glyphicon glyphicon-file"></span> Logs</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="tab-content">
+
+            <div id="Welcome" class="tab-pane fade in active">
+
+                <div class="starter-template" >
+                    <h1>Nina WebSocket APP Sample</h1>
+                    <br/>
+                <p class="lead">To get started, click on the "Start/End session" navigation item.</p>
+                </div>
+            </div>
+
+            <div id="StartEndSession" class="tab-pane fade">
+                <div class="starter-template">
+                    <h1><span class="glyphicon glyphicon-off"></span> Start/End session</h1>
+                    <p class="lead">You must start a Nina Session before sending commands via the WebSocket.</p>
+                    <br />
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Connection parameters</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">NMAID for this session:</span>
+                                <input type="text" class="form-control" id="nmaid" value="Nuance_ConUHack2017_20170119_210049">
+                            </div>
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">NMAID key for this session:</span>
+                                <input type="text" class="form-control" id="nmaid_key" value="0d11e9c5b897eefdc7e0aad840bf4316a44ea91f0d76a2b053be294ce95c7439dee8c3a6453cf7db31a12e08555b266d54c2300470e4140a4ea4c8ba285962fd">
+                            </div>
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Username for this session: <img src="images/blue_question_mark.png" height="15px" alt="question" title="used for long session support: dialog state is saved when disconnected and resumed when re-connected with the same username." /></span>
+                                <input type="text" class="form-control" id="username" value="websocket_sample">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Session parameters</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Company name for this session:</span>
+                                <input type="text" class="form-control" id="company_name" value="NES_NIQS">
+                            </div>
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Application name for this session:</span>
+                                <input type="text" class="form-control" id="application_name" value="NiM_Team_NIQS_2">
+                            </div>
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">NES grammar version for this session:</span>
+                                <input type="text" class="form-control" id="nes_version" value="1.0">
+                            </div>
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Application version:</span>
+                                <input type="text" class="form-control" id="application_version" value="0.0" readonly>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">Dialog agent for this session:</span>
+                                <input type="text" class="form-control" id="agent_url" value="http://ac-srvozrtr01.dev.ninaweb.nuance.com/nuance-nim_team-englishus-WebBotRouter/jbotservice.asmx/TalkAgent">
+                            </div>
+                            <div class="input-group col-sm-3">
+                                <span class="input-group-addon">API version for this session: <img src="images/blue_question_mark.png" height="15px" alt="question" title="'LATEST' = '1.1' = responses are simplified.
+'1.0' = responses are NOT simplified." /></span>
+                                <select id="api_version" class="form-control">
+                                    <option value="LATEST">LATEST</option>
+                                    <option value="1.1">1.1</option>
+                                    <option value="1.0">1.0</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="input-group col-sm-2" style="margin:0 auto; float:none;">
+                        <span class="input-group-addon">Log security:</span>
+                        <select id="start-end_logSecurity" class="form-control">
+                            <option value="off">off</option>
+                            <option value="mask">mask</option>
+                            <option value="encrypt">encrypt</option>
+                        </select>
+                    </div>
+                    <button type="button" id="button-start-end" class="btn btn-primary btn-lg" onclick="startSession()">Start session</button>
+                    <br />
+                    <br />
+                    <p id="label-start-end" class="lead">You currently have no active session.</p>
+                </div>
+            </div>
+
+<!--  TTS COMMAND START  -->
+            <div id="PlayAudio" class="tab-pane fade">
+                <div class="starter-template">
+                    <h1><span class="glyphicon glyphicon-play"></span> Play audio</h1>
+                    <p class="lead">Play audio allows you to convert text to audio.</p>
+                    <div class="input-group text-left">
+                        <input type="checkbox" name="barge-in" id="barge-in" data-label-text="Barge-In" onchange="bargeInChanged()">
+                    </div>
+                    <div id="playAudioSREngine" class="input-group col-sm-3" style="display:none;">
+                        <span class="input-group-addon">Engine to use: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Default is specified by your License file." /></span>
+                        <select id="playaudio_sr_engine" class="form-control" onchange="speechrecEngineChanged('playaudio_sr_engine', 'playAudioUseNTE', false)">
+                            <option value="">--</option>
+                            <option value="MREC">MREC</option>
+                            <!--<option value="NTE">NTE</option>-->
+                            <option value="NR">NR</option>
+                        </select>
+                    </div>
+                    <div id="playAudioUseNTE" class="input-group col-sm-3" style="display:none;">
+                        <span class="input-group-addon">Operating mode: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Accurate: Most accurate transcription, may be slow.
+Fast: Balance of speed and transcription accuracy.
+Warp: Fastest transcription time, may be less accurate." /></span>
+                        <select id="playaudio_nte_mode" class="form-control">
+                            <option value="accurate">Accurate</option>
+                            <option value="fast">Fast</option>
+                            <option value="warp">Warp</option>
+                        </select>
+                    </div>
+                    <br />
+                    <div class="input-group col-sm-2">
+                        <span class="input-group-addon">Log security:</span>
+                        <select id="tts_logSecurity" class="form-control">
+                            <option value="off">off</option>
+                            <option value="mask">mask</option>
+                            <option value="encrypt">encrypt</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <input class="form-control"
+                               id="playaudio_text"
+                               onkeyup="textChanged('playaudio_text', 'playaudio_button')"
+                               onchange="textChanged('playaudio_text', 'playaudio_button')"
+                               placeholder="Input..."
+                               type="text">
+                        <span class="input-group-btn">
+                            <button id="playaudio_button" class="btn btn-primary disabled" onclick="playAudio()">Play audio</button>
+                        </span>
+                    </div>
+                    <br /><br />
+                    <textarea placeholder="Results..." readonly style="resize:none" class="form-control input-md" rows="20" id="playaudio_results"></textarea>
+                </div>
+            </div>
+<!--  TTS COMMAND END  -->
+
+<!--  SPEECH RECO COMMANDS START  -->
+            <div id="SpeechRecognition" class="tab-pane fade">
+                <div class="starter-template">
+                    <h1><span class="glyphicon glyphicon-equalizer"></span> Speech recognition</h1>
+                    <p class="lead">Speech recognition allows you to convert audio to text.</p>
+                    <div class="input-group" style="margin:0 auto; float:none;">
+                        <input type="checkbox" name="sr_formURL" id="sr_formURL" data-label-text="from-file" onchange="sr_fromFileChanged('sr_formURL','srFromFile',true)">
+                    </div>
+                    <div id="srFromFile" class="input-group col-sm-5" style="display:none;">
+                        <span class="input-group-addon">URL: <img src="images/blue_question_mark.png" height="15px" alt="question" title="url to a .wav or .mp4 audio file."/> </span>
+                        <input type="text" class="form-control" id="srFromFile_url" value="https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav">
+                    </div>
+                    <br />
+                    <div class="input-group col-sm-3" style="margin:0 auto; float:none;">
+                        <span class="input-group-addon">Engine to use: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Default is specified by your License file." /></span>
+                        <select id="sr_engine" class="form-control" onchange="speechrecEngineChanged('sr_engine', 'srUseNTE', true)">
+                            <option value="">--</option>
+                            <option value="MREC">MREC</option>
+                            <option value="NTE">NTE</option>
+                            <option value="NR">NR</option>
+                        </select>
+                    </div>
+                    <div id="srUseNTE" class="input-group col-sm-3" style="display:none;">
+                        <span class="input-group-addon">Operating mode: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Accurate: Most accurate transcription, may be slow.
+Fast: Balance of speed and transcription accuracy.
+Warp: Fastest transcription time, may be less accurate." /></span>
+                        <select id="nte_mode" class="form-control">
+                            <option value="accurate">Accurate</option>
+                            <option value="fast">Fast</option>
+                            <option value="warp">Warp</option>
+                        </select>
+                    </div>
+                    <br />
+                    <div class="input-group col-sm-2" style="margin:0 auto; float:none;">
+                        <span class="input-group-addon">Log security:</span>
+                        <select id="sr_logSecurity" class="form-control">
+                            <option value="off">off</option>
+                            <option value="mask">mask</option>
+                            <option value="encrypt">encrypt</option>
+                        </select>
+                    </div>
+                    <button type="button" id="sr_button" class="btn btn-primary btn-lg" onclick="startSRRecording()">Start recording</button>
+                    <br /><br />
+                    <textarea placeholder="Results..." readonly style="resize:none" class="form-control input-md" rows="20" id="sr_results"></textarea>
+                </div>
+            </div>
+<!--  SPEECH RECO COMMANDS END  -->
+
+<!--  CONFIG COMMANDS START  -->
+            <div id="Config" class="tab-pane fade">
+                <div class="starter-template">
+                    <h1><span class="glyphicon glyphicon-equalizer"></span> Speech recognition - configuration</h1>
+                    <br />
+                    <br />
+                    <div id="vocabularies" class="panel-group" role="tablist" aria-multiselectable="true">
+    <!--  DYNAMIC VOCABULARIES COMMANDS START  -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab">
+                            <p class="lead text-left"><a role="button" data-toggle="collapse" data-parent="#vocabularies" href="#collapseDynamicVocab">Dynamic vocabularies:
+                            </a></p>
+                            <p class="text-left">These vocabularies have a limit of 100 words for NTE and 500 words for MREC. If activated, they will also affect NLU and Dialog commands.</p>
+                        </div>
+                        <div id="collapseDynamicVocab" class="panel-collapse collapse" role="tabpanel" style="margin-left:20px; margin-right:20px;">
+                            <br />
+                            <div class="text-left">
+                                <div class="input-group col-sm-2">
+                                    <span class="input-group-addon">Log security:</span>
+                                    <select id="listDV_logSecurity" class="form-control">
+                                        <option value="off">off</option>
+                                        <option value="mask">mask</option>
+                                        <option value="encrypt">encrypt</option>
+                                    </select>
+                                </div>
+                                <button id="dv_getall_button" class="btn btn-primary" onclick="dynamicVocabGetAll()"><span class="glyphicon glyphicon-info-sign"></span> List existing vocabularies</button>
+                            </div>
+                            <br />
+                            <div id="dynamicVocabularies" class="panel-group" role="tablist" aria-multiselectable="true">
+        <!--  ACTIVATE/DEACTIVATE DV START  -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <p class="lead text-left"><a role="button" data-toggle="collapse" data-parent="#dynamicVocabularies" href="#collapseOneDv">
+                                        <span class="glyphicon glyphicon-ok-sign"></span> Activate /
+                                        <span class="glyphicon glyphicon-remove-sign"></span> Deactivate vocabularies:
+                                    </a></p>
+                                </div>
+                                <div id="collapseOneDv" class="panel-collapse collapse" role="tabpanel">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Name</label>
+                                            <div class="col-sm-2">
+                                                <input class="form-control" id="activate_dv_name" placeholder="Concept name..." type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Log security:</label>
+                                            <div class="col-sm-2">
+                                                <select id="activate-deactivateDV_logSecurity" class="form-control">
+                                                    <option value="off">off</option>
+                                                    <option value="mask">mask</option>
+                                                    <option value="encrypt">encrypt</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-3">
+                                                <button class="btn btn-primary" onclick="dynamicVocabActivate()">Activate</button>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <button class="btn btn-danger" onclick="dynamicVocabDeactivate()">Deactivate</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        <!--  ACTIVATE/DEACTIVATE DV END  -->
+                            <br />
+        <!--  UPLOAD DV START  -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <p class="lead text-left"><a role="button" data-toggle="collapse" data-parent="#dynamicVocabularies" href="#collapseTwoDv">
+                                        <span class="glyphicon glyphicon-plus-sign"></span> Upload vocabularies:
+                                    </a></p>
+                                </div>
+                                <div id="collapseTwoDv" class="panel-collapse collapse" role="tabpanel">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Name <img src="images/blue_question_mark.png" height="15px" alt="question" title="If you choose another concept name, the vocabulary will not be used for NTE recognitions." /></label>
+                                            <div class="row">
+                                            <div class="col-sm-2">
+                                                <div class="input-group">
+                                                    <select id="upload_dv_name" class="form-control" onchange="uploadDVnameChanged()">
+                                                        <option value="other">Other - please specify:</option>
+                                                        <option value="company-name">company-name</option>
+                                                        <option value="first-name">first-name</option>
+                                                        <option value="last-name">last-name</option>
+                                                        <option value="place-name">place-name</option>
+                                                        <option value="product-name">product-name</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="otherDVname" class="col-sm-3">
+                                                <div class="input-group">
+                                                    <input class="form-control" id="upload_dv_name_other" placeholder="Concept name..." type="text" style="border-top-right-radius:4px; border-bottom-right-radius:4px;">
+                                                    <h4><span class="label label-warning" style="font-weight:400; color:#000;">This vocabulary will not be used by NTE.</span></h4>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Input</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        Bag of words <input type="radio" checked name="upload_dv_inputType" value="array">
+                                                    </span>
+                                                    <ul class="form-control" id="upload_dv_textArray_data" style="float:none;"></ul>
+                                                </div>
+                                                <span id="helpBlock" class="help-block">Separate tags with ',' or by pressing Enter.</span>
+                                                <br />
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        Concept values and synonyms <input type="radio" name="upload_dv_inputType" value="object">
+                                                    </span>
+                                                    <textarea class="form-control" rows="3" id="upload_dv_textObject_data" placeholder="paste or type your json here..." style="width:;"></textarea>
+                                                </div>
+                                                <span id="helpBlock" class="help-block">ex: {"kirkdouglas":["kirk douglas", "dad", "kirk", "pops"]}</span>
+                                                <br />
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        URL to .json: <input type="radio" name="upload_dv_inputType" value="url">
+                                                    </span>
+                                                    <input class="form-control" id="upload_dv_url_data" placeholder="http://..." type="text">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1"></label>
+                                            <div class="col-sm-2">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Log security:</span>
+                                                    <select id="uploadDV_logSecurity" class="form-control">
+                                                        <option value="off">off</option>
+                                                        <option value="mask">mask</option>
+                                                        <option value="encrypt">encrypt</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-group">
+                                                    <button id="upload_dv_btn" class="btn btn-primary" onclick="uploadDynamicVocab()">Upload</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        <!--  UPLOAD DV END  -->
+                            </div>
+                        </div>
+                    </div>
+    <!--  DYNAMIC VOCABULARIES COMMANDS END  -->
+                    <br />
+    <!--  PROJECT VOCABULARIES COMMANDS START  -->
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab">
+                            <p class="lead text-left"><a role="button" data-toggle="collapse" data-parent="#vocabularies" href="#collapseProjectVocab">Project vocabularies (only applicable to NTE for now):
+                            </a></p>
+                            <p class="text-left">These vocabularies have no limit in size nor in format.</p>
+                        </div>
+                        <div id="collapseProjectVocab" class="panel-collapse collapse" role="tabpanel" style="margin-left:20px; margin-right:20px;">
+                            <br />
+                            <div class="text-left">
+                                <div class="input-group col-sm-2">
+                                    <span class="input-group-addon">Log security:</span>
+                                    <select id="listPV_logSecurity" class="form-control">
+                                        <option value="off">off</option>
+                                        <option value="mask">mask</option>
+                                        <option value="encrypt">encrypt</option>
+                                    </select>
+                                </div>
+                                <button id="pv_getall_button" class="btn btn-primary" onclick="projectVocabGetAll()"><span class="glyphicon glyphicon-info-sign"></span> List existing vocabularies</button>
+                            </div>
+                            <br />
+                            <div id="projectVocabularies" class="panel-group" role="tablist" aria-multiselectable="true">
+        <!--   ACTIVATE/DEACTIVATE PV START -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <p class="lead text-left"><a role="button" data-toggle="collapse" data-parent="#projectVocabularies" href="#collapseOnePv">
+                                        <span class="glyphicon glyphicon-ok-sign"></span> Activate /
+                                        <span class="glyphicon glyphicon-remove-sign"></span> Deactivate vocabularies:
+                                    </a></p>
+                                </div>
+                                <div id="collapseOnePv" class="panel-collapse collapse" role="tabpanel">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Name</label>
+                                            <div class="col-sm-2">
+                                                <input class="form-control" id="activate_pv_name" placeholder="Vocabulary name..." type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Weight <img src="images/blue_question_mark.png" height="15px" alt="question" title="The importance of the domain LM compared to the base language model. The default value is 'optimal'." /></label>
+                                            <div class="col-sm-2">
+                                                <select id="activate_pv_weight" class="form-control">
+                                                    <option value="optimal">--</option>
+                                                    <option value="lowest">Lowest</option>
+                                                    <option value="low">Low</option>
+                                                    <option value="optimal">Optimal</option>
+                                                    <option value="high">High</option>
+                                                    <option value="highest">Highest</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Log security:</label>
+                                            <div class="col-sm-2">
+                                                <select id="activate-deactivatePV_logSecurity" class="form-control">
+                                                    <option value="off">off</option>
+                                                    <option value="mask">mask</option>
+                                                    <option value="encrypt">encrypt</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <button id="pv_activation_btn" class="btn btn-primary" onclick="projectVocabActivate()">Activate</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        <!--  ACTIVATE/DEACTIVATE PV END  -->
+                            <br />
+        <!--  UPLOAD PV START  -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <p class="lead text-left"><a role="button" data-toggle="collapse" data-parent="#projectVocabularies" href="#collapseTwoPv">
+                                        <span class="glyphicon glyphicon-plus-sign"></span> Upload vocabularies:
+                                    </a></p>
+                                </div>
+                                <div id="collapseTwoPv" class="panel-collapse collapse" role="tabpanel">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Name</label>
+                                            <div class="col-sm-2">
+                                                <input class="form-control" id="upload_pv_name" placeholder="Vocabulary name..." type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Input</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        Text <input type="radio" checked name="upload_pv_inputType" value="text">
+                                                    </span>
+                                                    <textarea class="form-control" rows="3" id="upload_pv_text_data" placeholder="paste or type your training text here..." style="width:;"></textarea>
+                                                </div>
+                                                <br />
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        URL to .zip or .txt: <input type="radio" name="upload_pv_inputType" value="url">
+                                                    </span>
+                                                    <input class="form-control" id="upload_pv_url_data" placeholder="http://..." type="text">
+                                                </div>
+                                                <br />
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        From NES <input type="radio" name="upload_pv_inputType" value="nes">
+                                                    </span>
+                                                    <input class="form-control" type="text" value="" disabled>
+                                                </div>
+                                                <!--
+                                                <br />
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">
+                                                        File (.txt or .zip) <input type="radio" name="upload_pv_inputType" value="file">
+                                                    </span>
+                                                    <input type="file" id="upload_pv_file_data">
+                                                </div>
+                                                -->
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1"></label>
+                                            <div class="col-sm-2">
+                                                <div class="input-group">
+                                                    <div class="checkbox">
+                                                        <label><input type="checkbox" id="upload_pv_append">Append <img src="images/blue_question_mark.png" height="15px" alt="question" title="If the vocabulary name already exists, append the input to the existing data."/></label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">Log security:</span>
+                                                    <select id="uploadPV_logSecurity" class="form-control">
+                                                        <option value="off">off</option>
+                                                        <option value="mask">mask</option>
+                                                        <option value="encrypt">encrypt</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-1">
+                                                <button id="upload_pv_btn" class="btn btn-primary" onclick="uploadProjectVocab()">Upload</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        <!--  UPLOAD PV END  -->
+                            <br />
+        <!--  DELETE PV START  -->
+                            <div class="panel panel-default">
+                                <div class="panel-heading" role="tab">
+                                    <p class="lead text-left"><a role="button" data-toggle="collapse" data-parent="#projectVocabularies" href="#collapseThreePv">
+                                        <span class="glyphicon glyphicon-minus-sign"></span> Delete vocabularies:
+                                    </a></p>
+                                </div>
+                                <div id="collapseThreePv" class="panel-collapse collapse" role="tabpanel">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Name</label>
+                                            <div class="col-sm-2">
+                                                <input class="form-control" id="delete_pv_name" placeholder="Vocabulary name..." type="text">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1">Log security:</label>
+                                            <div class="col-sm-2">
+                                                <select id="deletePV_logSecurity" class="form-control">
+                                                    <option value="off">off</option>
+                                                    <option value="mask">mask</option>
+                                                    <option value="encrypt">encrypt</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <button id="pv_delete_button" class="btn btn-primary btn-danger" onclick="projectVocabDelete()">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        <!--  DELETE PV END  -->
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    <br />
+                    <textarea placeholder="Results..." readonly style="resize:none" class="form-control input-md" rows="20" id="config_results"></textarea>
+                </div>
+            </div>
+    <!--  PROJECT VOCABULARIES COMMANDS END  -->
+<!--  CONFIG COMMANDS END  -->
+
+<!--  NLU COMMANDS START  -->
+            <div id="NR" class="tab-pane fade">
+                <div class="starter-template">
+
+                    <h1><span class="glyphicon glyphicon-filter"></span> NLU</h1>
+                    <p class="lead">Natural Language Understanding done by NR.</p>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoNLU</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="nlu_nr_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input class="form-control"
+                                       id="nlu_nr_text"
+                                       onkeyup="textChanged('nlu_nr_text', 'nlu_nr_txtbutton')"
+                                       onchange="textChanged('nlu_nr_text', 'nlu_nr_txtbutton')"
+                                       placeholder="Input..."
+                                       type="text">
+                                <span class="input-group-btn">
+                                    <button id="nlu_nr_txtbutton" class="btn btn-primary disabled" onclick="nluNR()">Request NLU</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoSpeechRecognitionAndNLU</h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="input-group">
+                                <input type="checkbox" name="nlu_nr_sr_formURL" id="nlu_nr_sr_formURL" data-label-text="from-file" onchange="sr_fromFileChanged('nlu_nr_sr_formURL','nlu_nr_srFromFile',false)">
+                            </div>
+                            <div id="nlu_nr_srFromFile" class="input-group col-sm-5" style="display:none;">
+                                <span class="input-group-addon">URL: <img src="images/blue_question_mark.png" height="15px" alt="question" title="url to a .wav or .mp4 audio file."/> </span>
+                                <input type="text" class="form-control" id="nlu_nr_srFromFile_url" value="https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-3">
+                                <span class="input-group-addon">Recognition engine to use: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Default is specified by your License file." /></span>
+                                <select id="nlu_nr_sr_engine" class="form-control" onchange="speechrecEngineChanged('nlu_nr_sr_engine', 'nlu_nr_srUseNTE', false)">
+                                    <option value="">--</option>
+                                    <option value="MREC">MREC</option>
+                                    <option value="NTE">NTE</option>
+                                    <option value="NR">NR</option>
+                                </select>
+                            </div>
+                            <div id="nlu_nr_srUseNTE" class="input-group col-sm-3" style="display:none;">
+                                <span class="input-group-addon">Operating mode: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Accurate: Most accurate transcription, may be slow.
+        Fast: Balance of speed and transcription accuracy.
+        Warp: Fastest transcription time, may be less accurate." /></span>
+                                <select id="nlu_nr_nte_mode" class="form-control">
+                                    <option value="accurate">Accurate</option>
+                                    <option value="fast">Fast</option>
+                                    <option value="warp">Warp</option>
+                                </select>
+                            </div>
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="nlu_nr_sr_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <button type="button" id="nlu_nr_sr_button" class="btn btn-primary btn-lg" onclick="startNLUNRRecording()">Start recording</button>
+                            <br />
+                            <br />
+                            <textarea placeholder="Speech recognition results..." readonly style="resize:none" class="form-control input-md" rows="10" id="nlu_nr_srResults"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <textarea placeholder="Results..." readonly style="resize:none" class="form-control input-md" rows="20" id="nlu_nr_results"></textarea>
+                </div>
+            </div>
+
+            <div id="NLE" class="tab-pane fade">
+                <div class="starter-template">
+
+                    <h1><span class="glyphicon glyphicon-filter"></span> NLU</h1>
+                    <p class="lead">Natural Language Understanding done by NLE.</p>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">NLE model: </span>
+                        <input type="text" class="form-control" id="nlu_nle_model" value="" placeholder="Use this only if you want to override your default value.">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">NLE model language: </span>
+                        <input type="text" class="form-control" id="nlu_nle_model_language" value="" placeholder="Use this only if you want to override your default value.">
+                    </div>
+                    <br />
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoNLU</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="nlu_nle_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input class="form-control"
+                                       id="nlu_nle_text"
+                                       onkeyup="textChanged('nlu_nle_text', 'nlu_nle_txtbutton')"
+                                       onchange="textChanged('nlu_nle_text', 'nlu_nle_txtbutton')"
+                                       placeholder="Input..."
+                                       type="text">
+                                <span class="input-group-btn">
+                                    <button id="nlu_nle_txtbutton" class="btn btn-primary disabled" onclick="nluNLE()">Request NLU</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoSpeechRecognitionAndNLU</h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="input-group">
+                                <input type="checkbox" name="nlu_nle_sr_formURL" id="nlu_nle_sr_formURL" data-label-text="from-file" onchange="sr_fromFileChanged('nlu_nle_sr_formURL','nlu_nle_srFromFile',false)">
+                            </div>
+                            <div id="nlu_nle_srFromFile" class="input-group col-sm-5" style="display:none;">
+                                <span class="input-group-addon">URL: <img src="images/blue_question_mark.png" height="15px" alt="question" title="url to a .wav or .mp4 audio file."/> </span>
+                                <input type="text" class="form-control" id="nlu_nle_srFromFile_url" value="https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-3">
+                                <span class="input-group-addon">Recognition engine to use: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Default is specified by your License file." /></span>
+                                <select id="nlu_nle_sr_engine" class="form-control" onchange="speechrecEngineChanged('nlu_nle_sr_engine', 'nlu_nle_srUseNTE', false)">
+                                    <option value="">--</option>
+                                    <option value="MREC">MREC</option>
+                                    <option value="NTE">NTE</option>
+                                    <option value="NR">NR</option>
+                                </select>
+                            </div>
+                            <div id="nlu_nle_srUseNTE" class="input-group col-sm-3" style="display:none;">
+                                <span class="input-group-addon">Operating mode: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Accurate: Most accurate transcription, may be slow.
+        Fast: Balance of speed and transcription accuracy.
+        Warp: Fastest transcription time, may be less accurate." /></span>
+                                <select id="nlu_nle_nte_mode" class="form-control">
+                                    <option value="accurate">Accurate</option>
+                                    <option value="fast">Fast</option>
+                                    <option value="warp">Warp</option>
+                                </select>
+                            </div>
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="nlu_nle_sr_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <button type="button" id="nlu_nle_sr_button" class="btn btn-primary btn-lg" onclick="startNLUNLERecording()">Start recording</button>
+                            <br />
+                            <br />
+                            <textarea placeholder="Speech recognition results..." readonly style="resize:none" class="form-control input-md" rows="10" id="nlu_nle_srResults"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <textarea placeholder="Results..." readonly style="resize:none" class="form-control input-md" rows="20" id="nlu_nle_results"></textarea>
+                </div>
+            </div>
+<!--  NLU COMMANDS END  -->
+
+<!--  DIALOG COMMANDS START  -->
+            <div id="NiW" class="tab-pane fade">
+                <div class="starter-template">
+
+                    <h1><span class="glyphicon glyphicon-comment"></span> Dialog</h1>
+                    <p class="lead">Dialog done by NiW.</p>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoDialog</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="dialog_niw_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input class="form-control"
+                                       id="dialog_niw_text"
+                                       onkeyup="textChanged('dialog_niw_text', 'dialog_niw_txtbutton')"
+                                       onchange="textChanged('dialog_niw_text', 'dialog_niw_txtbutton')"
+                                       placeholder="Input..."
+                                       type="text">
+                                <span class="input-group-btn">
+                                    <button id="dialog_niw_txtbutton" class="btn btn-primary disabled" onclick="dialogNiW()">Request Dialog</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoSpeechRecognitionAndDialog</h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="input-group">
+                                <input type="checkbox" name="dialog_niw_sr_formURL" id="dialog_niw_sr_formURL" data-label-text="from-file" onchange="sr_fromFileChanged('dialog_niw_sr_formURL','dialog_niw_srFromFile',false)">
+                            </div>
+                            <div id="dialog_niw_srFromFile" class="input-group col-sm-5" style="display:none;">
+                                <span class="input-group-addon">URL: <img src="images/blue_question_mark.png" height="15px" alt="question" title="url to a .wav or .mp4 audio file."/> </span>
+                                <input type="text" class="form-control" id="dialog_niw_srFromFile_url" value="https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-3">
+                                <span class="input-group-addon">Recognition engine to use: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Default is specified by your License file." /></span>
+                                <select id="dialog_niw_sr_engine" class="form-control" onchange="speechrecEngineChanged('dialog_niw_sr_engine', 'dialog_niw_srUseNTE', false)">
+                                    <option value="">--</option>
+                                    <option value="MREC">MREC</option>
+                                    <option value="NTE">NTE</option>
+                                    <option value="NR">NR</option>
+                                </select>
+                            </div>
+                            <div id="dialog_niw_srUseNTE" class="input-group col-sm-3" style="display:none;">
+                                <span class="input-group-addon">Operating mode: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Accurate: Most accurate transcription, may be slow.
+        Fast: Balance of speed and transcription accuracy.
+        Warp: Fastest transcription time, may be less accurate." /></span>
+                                <select id="dialog_niw_nte_mode" class="form-control">
+                                    <option value="accurate">Accurate</option>
+                                    <option value="fast">Fast</option>
+                                    <option value="warp">Warp</option>
+                                </select>
+                            </div>
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="dialog_niw_sr_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <button type="button" id="dialog_niw_sr_button" class="btn btn-primary btn-lg" onclick="startDialogNiWRecording()">Start recording</button>
+                            <br />
+                            <br />
+                            <textarea placeholder="Speech recognition results..." readonly style="resize:none" class="form-control input-md" rows="10" id="dialog_niw_srResults"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <textarea placeholder="Dialog results..." readonly style="resize:none" class="form-control input-md" rows="15" id="dialog_niw_dialogResults"></textarea>
+                </div>
+            </div>
+
+            <div id="NCE" class="tab-pane fade">
+                <div class="starter-template">
+
+                    <h1><span class="glyphicon glyphicon-comment"></span> Dialog</h1>
+                    <p class="lead">Dialog done by NCE.</p>
+
+                    <div class="input-group">
+                        <span class="input-group-addon">NCE model: </span>
+                        <input type="text" class="form-control" id="dialog_nce_model" value="http://mtl-blade20-vm142:8888/Websocket/VirtualAssistant.zip">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">NCE model name: </span>
+                        <input type="text" class="form-control" id="dialog_nce_model_name" value="VirtualAssistant">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">NCE model version: </span>
+                        <input type="text" class="form-control" id="dialog_nce_model_version" value="2.0">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span class="input-group-addon">NLE model: </span>
+                        <input type="text" class="form-control" id="dialog_nle_model" value="http://mtl-blade20-vm142:8888/Websocket/nlu-grammars-Sam-2016-03-31-Demo-20160412-213328.zip">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">NLE model name: </span>
+                        <input type="text" class="form-control" id="dialog_nle_model_name" value="en_USA">
+                    </div>
+                    <br />
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoDialog</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="dialog_nce_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input class="form-control"
+                                       id="dialog_nce_text"
+                                       onkeyup="textChanged('dialog_nce_text', 'dialog_nce_txtbutton')"
+                                       onchange="textChanged('dialog_nce_text', 'dialog_nce_txtbutton')"
+                                       placeholder="Input..."
+                                       type="text">
+                                <span class="input-group-btn">
+                                    <button id="dialog_nce_txtbutton" class="btn btn-primary disabled" onclick="dialogNCE()">Request Dialog</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoSpeechRecognitionAndDialog</h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="input-group">
+                                <input type="checkbox" name="dialog_nce_sr_formURL" id="dialog_nce_sr_formURL" data-label-text="from-file" onchange="sr_fromFileChanged('dialog_nce_sr_formURL','dialog_nce_srFromFile',false)">
+                            </div>
+                            <div id="dialog_nce_srFromFile" class="input-group col-sm-5" style="display:none;">
+                                <span class="input-group-addon">URL: <img src="images/blue_question_mark.png" height="15px" alt="question" title="url to a .wav or .mp4 audio file."/> </span>
+                                <input type="text" class="form-control" id="dialog_nce_srFromFile_url" value="https://dl.dropboxusercontent.com/s/4ygn9m8wscadl22/TestAudioUpload.wav">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-3">
+                                <span class="input-group-addon">Recognition engine to use: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Default is specified by your License file." /></span>
+                                <select id="dialog_nce_sr_engine" class="form-control" onchange="speechrecEngineChanged('dialog_nce_sr_engine', 'dialog_nce_srUseNTE', false)">
+                                    <option value="">--</option>
+                                    <option value="MREC">MREC</option>
+                                    <option value="NTE">NTE</option>
+                                    <option value="NR">NR</option>
+                                </select>
+                            </div>
+                            <div id="dialog_nce_srUseNTE" class="input-group col-sm-3" style="display:none;">
+                                <span class="input-group-addon">Operating mode: <img src="images/blue_question_mark.png" height="15px" alt="question" title="Accurate: Most accurate transcription, may be slow.
+        Fast: Balance of speed and transcription accuracy.
+        Warp: Fastest transcription time, may be less accurate." /></span>
+                                <select id="dialog_nce_nte_mode" class="form-control">
+                                    <option value="accurate">Accurate</option>
+                                    <option value="fast">Fast</option>
+                                    <option value="warp">Warp</option>
+                                </select>
+                            </div>
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="dialog_nce_sr_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <button type="button" id="dialog_nce_sr_button" class="btn btn-primary btn-lg" onclick="startDialogNCERecording()">Start recording</button>
+                            <br />
+                            <br />
+                            <textarea placeholder="Speech recognition results..." readonly style="resize:none" class="form-control input-md" rows="10" id="dialog_nce_srResults"></textarea>
+                        </div>
+                    </div>
+                    <br />
+                    <textarea placeholder="Results..." readonly style="resize:none" class="form-control input-md" rows="20" id="dialog_nce_dialogResults"></textarea>
+
+                </div>
+            </div>
+<!--  DIALOG COMMANDS END  -->
+
+<!--  VOCAL PASSWORD COMMANDS START  -->
+            <div id="VocalPassword" class="tab-pane fade">
+                <div class="starter-template">
+
+                <h1><span class="glyphicon glyphicon-lock"></span> Vocal Password</h1>
+                <p class="lead">Vocal Password allows you to set a password with your voice.</p>
+
+                <div class="input-group col-sm-2">
+                    <span class="input-group-addon">Log security:</span>
+                    <select id="vp_logSecurity" class="form-control">
+                        <option value="off">off</option>
+                        <option value="mask">mask</option>
+                        <option value="encrypt">encrypt</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input class="form-control"
+                           id="vp_user_id"
+                           placeholder="User ID..."
+                           type="text">
+                    <span class="input-group-btn">
+                        <button id="vp_check_button" class="btn btn-primary" onclick="checkUserEnrollment()">Check User</button>
+                        <button id="vp_enroll_button" class="btn btn-primary" onclick="vpStartEnrollRecording()">Enroll</button>
+                        <button id="vp_authenticate_button" class="btn btn-primary" onclick="vpStartAuthenticateRecording()">Authenticate</button>
+                    </span>
+                </div>
+
+                <br />
+                <br />
+                <textarea placeholder="Results..." readonly style="resize:none" class="form-control input-md" rows="20" id="vp_results"></textarea>
+
+                </div>
+            </div>
+<!--  VOCAL PASSWORD COMMANDS END  -->
+
+<!--  KQUERY COMMANDS START  -->
+            <div id="KQTest" class="tab-pane fade">
+                <div class="starter-template">
+
+                    <h1><span class="glyphicon glyphicon-briefcase"></span> Business Logic Engine</h1>
+                    <p class="lead">Test function calls on the KQuery server</p>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaDoBusinessLogic</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Project name:</span>
+                                <input type="text" class="form-control"
+                                       id="kq_project_name"
+                                       onkeyup="kQCallInputChanged()"
+                                       onchange="kQCallInputChanged()"
+                                       placeholder="ProjectName"
+                                       value="debug">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Version number:</span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="kq_version_number"
+                                       onkeyup="kQCallInputChanged()"
+                                       onchange="kQCallInputChanged()"
+                                       placeholder="VersionNumber"
+                                       value="3">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Function name:</span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="kq_function_name"
+                                       onkeyup="kQCallInputChanged()"
+                                       onchange="kQCallInputChanged()"
+                                       placeholder="FunctionName"
+                                       value="power">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="doBLE_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <input class="form-control"
+                                       id="kq_body_text"
+                                       onkeyup="kQCallInputChanged()"
+                                       onchange="kQCallInputChanged()"
+                                       placeholder="Input(JSON object)..."
+                                       value="{input:'2', power:'3'}"
+                                       type="text">
+                                <span class="input-group-btn">
+                                    <button id="kq_body_txtbutton" class="btn btn-primary" onclick="kQueryCall()">Request Function Call</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <textarea placeholder="KQuery function call result..." readonly style="resize:none" class="form-control input-md" rows="15" id="kq_result"></textarea>
+                </div>
+            </div>
+
+            <div id="KQUpload" class="tab-pane fade">
+                <div class="starter-template">
+
+                    <h1><span class="glyphicon glyphicon-upload"></span> Business Logic Engine</h1>
+                    <p class="lead">Upload KQuery package to the KQuery server containing business logic</p>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaUploadBusinessLogic</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Project name:</span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="kq_upload_project_name"
+                                       onkeyup="kQUploadInputChanged()"
+                                       onchange="kQUploadInputChanged()"
+                                       placeholder="ProjectName">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-5">
+                                <span class="input-group-addon">Version number:</span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="kq_upload_version_number"
+                                       onkeyup="kQUploadInputChanged()"
+                                       onchange="kQUploadInputChanged()"
+                                       placeholder="VersionNumber">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-5">
+                                <input type="file"
+                                       class="form-control"
+                                       onchange="kQUploadInputChanged()"
+                                       id="kq_choose_file">
+                            </div>
+                            <br />
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="uploadBLE_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button id="kq_upload_txtbutton" class="btn btn-primary disabled" onclick="kQueryUpload()">Upload Package</button>
+                                </span>
+                                <textarea placeholder="KQuery upload result..." readonly style="resize:none" class="form-control input-md" rows="7"
+                                id="kq_upload_result"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="KQStatus" class="tab-pane fade">
+                <div class="starter-template">
+
+                    <h1><span class="glyphicon glyphicon-refresh"></span> Business Logic Engine</h1>
+                    <p class="lead">Get status of the KQuery server</p>
+
+                    <div class="panel panel-default text-left">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">NinaBLEStatus</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="input-group col-sm-2">
+                                <span class="input-group-addon">Log security:</span>
+                                <select id="bleStatus_logSecurity" class="form-control">
+                                    <option value="off">off</option>
+                                    <option value="mask">mask</option>
+                                    <option value="encrypt">encrypt</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <button id="kq_body_txtbutton" class="btn btn-primary" onclick="kQueryStatus()">Request Server Status</button>
+                                </span>
+                            </div>
+                            <br />
+                            <textarea placeholder="Server status..." readonly style="resize:none" class="form-control input-md" rows="15" id="kq_status"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+<!--  KQUERY COMMANDS END  -->
+
+<!--  LOG COMMAND START  -->
+            <div id="Logs" class="tab-pane fade">
+                <div class="starter-template">
+
+                <h1>Logs</h1>
+                <p class="lead">Logs allow you to see all your acivity and recordings.</p>
+
+                <br />
+                <br />
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <div class="input-group col-sm-2" style="margin:0 auto; float:none;">
+                            <span class="input-group-addon">Log security:</span>
+                            <select id="getLogs_logSecurity" class="form-control">
+                                <option value="off">off</option>
+                                <option value="mask">mask</option>
+                                <option value="encrypt">encrypt</option>
+                            </select>
+                        </div>
+                        <button id="logs_button" class="btn btn-primary" onclick="getLogs()">Get most recent log files</button><!--
+                        <button id="sendlogstotest_button" class="btn btn-success" onclick="sendLogToTest()">Send session.log to Test</button>-->
+                    </div>
+                    <ul class="list-group text-left" id="logs_list">
+                    </ul>
+                </div>
+
+                </div>
+            </div>
+<!--  LOG COMMAND END  -->
+
+        </div>
+
+    </body>
+
+</html>

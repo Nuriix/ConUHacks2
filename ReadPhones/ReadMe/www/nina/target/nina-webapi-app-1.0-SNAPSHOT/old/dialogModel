@@ -1,0 +1,18 @@
+{
+  "globalGrammars":{
+    "en":"<?xml version='1.0' encoding='UTF-8'?><grammar xml:lang='en' version='1.0' root='GLOBAL_rule' xmlns='http:\/\/www.w3.org\/2001\/06\/grammar'><rule id='GLOBAL_rule' scope='public'><item><one-of><item><one-of><item>help<\/item><item>what can I say<\/item><\/one-of><tag>GLOBAL='help'<\/tag><\/item><item><one-of><item>cancel that<\/item><item>cancel<\/item><item>forget it<\/item><\/one-of><tag>GLOBAL='cancel'<\/tag><\/item><item><one-of><item>repeat<\/item><item>could you repeat<\/item><\/one-of><tag>GLOBAL='repeat'<\/tag><\/item><item><one-of><item>reset<\/item><item>start over<\/item><\/one-of><tag>GLOBAL='reset'<\/tag><\/item><\/one-of><\/item><\/rule><\/grammar>"
+  },
+  "application":{
+    "companyName":"NUANCE",
+    "supportedLocales":[
+      "en"
+    ],
+    "grammarCompositionEngine":"robustParsing",
+    "applicationVersion":"0.0",
+    "applicationName":"NinaOnBoardingTemplate",
+    "grammarNames":{
+      "en":"276a988d659e21beefd5889277a73e4a713c2d2b"
+    }
+  },
+  "format":"1.0"
+}
