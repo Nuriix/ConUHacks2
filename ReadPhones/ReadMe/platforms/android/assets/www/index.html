@@ -99,7 +99,7 @@
 
             <input type=file name=hello id="thefile"/>
 
-            <p><input type=button onClick="loadworddoc();" value="Load" data-role="none" class="ui-btn"/></p>
+            <p><input type=button onClick="loadworddoc(document.getElementById('thefile').value); console.log(document.getElementById('thefile').value)" value="Load" data-role="none" class="ui-btn"/></p>
             <br>
             <textarea name=myarea cols=50 rows="10">nothing here yet</textarea>
 

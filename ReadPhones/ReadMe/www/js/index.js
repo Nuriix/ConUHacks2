@@ -58,7 +58,7 @@ var app = {
         window.location(url);
     }
    // document.addEventListener("deviceready", loadworddoc, false);
- function loadworddoc(){
+ function loadworddoc(fileLocation){
 
 
 window.resolveLocalFileSystemURL("cordova.file.*", gotFile, fail);
