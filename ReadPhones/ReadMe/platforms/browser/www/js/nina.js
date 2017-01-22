@@ -25,6 +25,8 @@ var currentCommand;
 // The WebSocket
 var socket;
 
+var audioQueue = [];
+
 function initWebSocket() {
 
     socket = new WebSocket("wss://" + sHost + ":" + sPort + "/" + socketPath); // The WebSocket must be secure "wss://"
@@ -67,7 +69,8 @@ function initWebSocket() {
         if (isOfType("ArrayBuffer", event.data))
         { // The play audio command will return ArrayBuffer data to be played
             console.log("ArrayBuffer");
-            audioPlayer.play(event.data);
+            //audioPlayer.play(event.data);
+			tryPlay(event.data);
         }
         else
         { // event.data should be text and you can parse it
@@ -357,8 +360,6 @@ function AudioPlayer(audioContext)
 
     this.play = function (audio)
     {
-		while(isPlaying) {
-		}
 		
         var audioToPlay = new Int16Array(audio);
         source = context.createBufferSource();
@@ -381,6 +382,11 @@ function AudioPlayer(audioContext)
         source.onended = function ()
         {
             isPlaying = false;
+			if(!(audioQueue.length <= 0)) {
+				audioQueue = audioQueue.slice(1, audioQueue.length);
+				audioPlayer.play(audioQueue[0]);
+			}
+			console.log("done " + audioQueue.length);
         };
     };
 
@@ -505,4 +511,10 @@ function sepString(string) {
 	for (var i = 0; i < ret.length; i++)
 		print += ret[i] + '/'
 	return ret;
+}
+
+function tryPlay(audio) {
+	audioQueue.push(audio);
+	if(!audioPlayer.isPlaying())
+		audioPlayer.play(audioQueue[0]);
 }
