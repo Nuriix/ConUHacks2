@@ -66,42 +66,13 @@
                     <button id="twitter" class="ui-btn">Twitter</button> <br>
                     <button id="reddit" class="ui-btn">Reddit</button> <br> -->
                 </div>
-                <script type="text/javascript">
-                 function loadworddoc(){
 
-        // creates the word object
+                              <script type="text/javascript">
 
-        var doc = new ActiveXObject("Word.Application");
-        var shell = new ActiveXObject('WScript.Shell');
+</script>
 
 
-        // doesn't display Word window
-
-        doc.Visible=false; 
-
-        // specify path to document
-
-        doc.Documents.Open(document.all.hello.value); 
-        var document = doc.ActiveDocument;
-
-    for (var i = 1; i <= document.Paragraphs.Count; i++) {
-    var Text = document.Paragraphs(i).Range.Text;
-    }
-
-       //document.all.myarea.value = txt;
-
-       document.all.tbContentElement.DOM.body.innerHTML = Text;
-
-       // quit word (very important or you'll quickly chew up memory!)
-
-       doc.quit(0); 
-
-     }
-
-       //-->
-
-       </script>
-                    <p><input type=button onClick="loadworddoc();" value="Load">
+                    <p><input type=button onclick="loadworddoc()" value="Load">
 
            <p><input type=file name=hello>
 
