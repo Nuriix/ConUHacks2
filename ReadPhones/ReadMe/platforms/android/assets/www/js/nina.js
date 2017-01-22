@@ -298,7 +298,7 @@ function playAudio(stringyThing) {
 	
 	var sepInput = sepString(inputText);
 	
-	//for(var i = 0; i < sepInput.length; i++) {
+	/*/for(var i = 0; i < sepInput.length; i++) {
 	socket.send(JSON.stringify({
 		command: {
 			name: "NinaPlayAudio",
@@ -307,7 +307,7 @@ function playAudio(stringyThing) {
 		}
 	}));
 	//}*/
-	//recursionAudio(sepInput);
+	recursionAudio(sepInput);
 	currentCommand = "NinaPlayAudio";
 
 }
@@ -321,7 +321,7 @@ function recursionAudio(stringArr) {
 		}
 	}));
 	if(stringArr.length > 1)
-		window.setTimeout(recursionAudio(stringArr.slice(1, stringArr.length)),4000);
+		setTimeout(function(){recursionAudio(stringArr.slice(1, stringArr.length));}, 1350);
 }
 
 
@@ -479,7 +479,7 @@ function fixLineBreaks(string) {
 
 function sepString(string) {
 	console.log(string);
-	var max = 20;
+	var max = 13;
 	var sub = string.split(" ");
 	var ret = [];
 	
@@ -498,7 +498,8 @@ function sepString(string) {
 			ret.push(temp);
 		}
 	}
+	var print = ""
 	for (var i = 0; i < ret.length; i++)
-		console.log("ret " + i + " is " + ret[i]);
+		print += ret[i] + '/'
 	return ret;
 }
