@@ -64,17 +64,6 @@ p {
     border: line;
     color: white;
     border-radius: 5px;
-    width: 240px;
-    display: table;
-    margin: 0 auto;
-}
-
-#thefile{
-  background: none;
-  border: none;
-}
-
-textarea {
-  border-radius: 5px;
-  opacity: 0.95;
+    width: 200px;
+    /*overflow:;*/
 }
