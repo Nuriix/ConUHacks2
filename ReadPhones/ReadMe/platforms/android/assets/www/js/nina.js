@@ -298,7 +298,7 @@ function playAudio(stringyThing) {
 	
 	var sepInput = sepString(inputText);
 	
-	/*/for(var i = 0; i < sepInput.length; i++) {
+	//for(var i = 0; i < sepInput.length; i++) {
 	socket.send(JSON.stringify({
 		command: {
 			name: "NinaPlayAudio",
@@ -307,7 +307,7 @@ function playAudio(stringyThing) {
 		}
 	}));
 	//}*/
-	recursionAudio(sepInput);
+	//recursionAudio(sepInput);
 	currentCommand = "NinaPlayAudio";
 
 }
@@ -357,6 +357,9 @@ function AudioPlayer(audioContext)
 
     this.play = function (audio)
     {
+		while(isPlaying) {
+		}
+		
         var audioToPlay = new Int16Array(audio);
         source = context.createBufferSource();
         var audioBuffer = context.createBuffer(1, audioToPlay.length, 8000);
