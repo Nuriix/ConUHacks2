@@ -295,7 +295,10 @@ function endSession() {
 
 function playAudio(stringyThing) {
 	var inputText = fixLineBreaks(stringyThing);
-
+	
+	var sepInput = sepString(inputText);
+	
+	//for(var i = 0; i < sepInput.length; i++) {
 	socket.send(JSON.stringify({
 		command: {
 			name: "NinaPlayAudio",
@@ -303,14 +306,22 @@ function playAudio(stringyThing) {
 			tts_type: "text"
 		}
 	}));
+	//}*/
+	//recursionAudio(sepInput);
 	currentCommand = "NinaPlayAudio";
 
-	if ($('#barge-in')[0].checked) {
-		ui_startBargeIn();
-		currentCommand = "NinaPlayAudioWithBargeIn";
-		record();
-	}
+}
 
+function recursionAudio(stringArr) {
+	socket.send(JSON.stringify({
+		command: {
+			name: "NinaPlayAudio",
+			text: stringArr[0],
+			tts_type: "text"
+		}
+	}));
+	if(stringArr.length > 1)
+		window.setTimeout(recursionAudio(stringArr.slice(1, stringArr.length)),4000);
 }
 
 
@@ -464,4 +475,30 @@ function fixLineBreaks(string) {
         string = replaceAll(string, '\r', replaceWith);
     }
     return string;
+}
+
+function sepString(string) {
+	console.log(string);
+	var max = 20;
+	var sub = string.split(" ");
+	var ret = [];
+	
+	for(var i = 0; i < sub.length; i++) {
+		var temp = "";
+		if(sub[i] >= max) {
+			ret.push(sub[i]);
+			temp = sub[i];
+		}
+		else {
+			while((temp + sub[i]).length <= max && i < sub.length) {
+				temp += sub[i] + " ";
+				i++;
+			}
+			i--;
+			ret.push(temp);
+		}
+	}
+	for (var i = 0; i < ret.length; i++)
+		console.log("ret " + i + " is " + ret[i]);
+	return ret;
 }
