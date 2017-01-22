@@ -26,7 +26,9 @@ body {
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     background: url("http://i.imgur.com/uNh0ygB.jpg") no-repeat;
     background-size: 100% 100%;
+    background-size: cover;
     color: white;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
     font-size:12px;
     height:100%;
@@ -58,6 +60,7 @@ p {
 }
 
 .ui-btn {
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     padding: 7px 10px 11px;
     margin: 5px 5px 5px;
     background:none;
