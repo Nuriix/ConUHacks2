@@ -39,32 +39,44 @@
     <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *" /> -->
 
     <link rel="stylesheet" type="text/css" href="css/index.css" />
+    <script type="text/javascript" src="js/index.js"></script>
+
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
     <title>Read Me!</title>
 </head>
 
 <body>
 
     <div class="app">
-        <div class="welcome">
-            <h2>ReadMe</h2>
-            <p>The App that will read for you!</p>
-        </div>
 
-        <div class="app_choices">
-        Read my feeds from:<br>
-            <button id="Facebook">Facebook</button><br>
-            <button id="Twitter">Twitter</button><br>
-            <button id="Reddit">Reddit</button><br>
+        <div data-role="page" id="pageone">
+            <div data-role="header" class="welcome">
+                <h1>Read Me</h1>
+                <p>The App that will read for you!</p>
+            </div>
+
+            <div data-role="main" class="ui-content">
+                <h2>Read my document from :</h2><br>
+                <div data-role="controlgroup">
+                    <button id="facebook" class="ui-btn">Select File</button> <br>
+                    <!--
+                    <button id="twitter" class="ui-btn">Twitter</button> <br>
+                    <button id="reddit" class="ui-btn">Reddit</button> <br> -->
+                </div>
+
+            </div>
+
+            <div data-role="footer">
+              <div data-role="navbar" ></div>
+              <br>
+              <p>Made By Team Better Than Tunnel Snakes</p>
+              <p>ConUHacks II 2017</p>
+            </div>
+
         </div>
-        <br><br>
-        <button onclick="redirect()">Go to SPS</button>
-        <script type="text/javascript">
-            function redirect(){
-                var url = "SPS.html"
-                window.location(url);
-            }
-        </script>
     </div>
-
 </body>
 </html>
