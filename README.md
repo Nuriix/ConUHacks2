@@ -9,9 +9,10 @@ Main Goal:
 
 Link to API:
 
-- Nuance: https://developer.nuance.com/public/index.php?task=home
+- Nuance:  https://webapi-intern.nuance.mobi/nuance-conuhacks/
+- https://developer.nuance.com/public/index.php?task=home
 
-          https://webapi-intern.nuance.mobi/nuance-conuhacks/
+         
 
 Link to things we need to know:
   https://docs.google.com/document/d/1oyVi6yAUO4CJ_6CCL9I4LfYANtGm4TqFOlRVj9QqctU/edit
